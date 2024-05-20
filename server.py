@@ -32,15 +32,21 @@ def get_recipes():
 
 @app.route('/api/recipes', methods=['POST'])
 def create_recipe():
-    logging.info("Accessing POST /api/recipes...")
     data = request.json
-    logging.info(f"Received data: {data}")
-    if not data or 'name' not in data or 'ingredients' not in data or 'instructions' not in data:
-        logging.error("Invalid data received.")
-        return jsonify({'error': 'Invalid data received'}), 400
-    new_recipe_id = recipesDAO.create(data['name'], data['ingredients'], data['instructions'])
-    logging.info(f"New recipe created with ID: {new_recipe_id}")
-    return jsonify({'message': 'Recipe created successfully', 'recipe_id': new_recipe_id}), 201
+    name = data.get('name')
+    ingredients = data.get('ingredients')
+    instructions = data.get('instructions')
+    if name and ingredients and instructions:
+        # Create the recipe using recipesDAO or your database handler
+        # Example:
+        new_recipe_id = recipesDAO.create(name, ingredients, instructions)
+        if new_recipe_id:
+            return jsonify({'message': 'Recipe added successfully'}), 201
+        else:
+            return jsonify({'message': 'Failed to add recipe'}), 500
+    else:
+        return jsonify({'message': 'Missing required data in request'}), 400
+
 
 @app.route('/api/recipes/<int:recipe_id>', methods=['GET'])
 def get_recipe(recipe_id):
