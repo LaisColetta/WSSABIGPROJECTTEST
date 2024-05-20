@@ -12,7 +12,7 @@ class RecipesDAO:
                 password=cfg.MYSQL_DATABASE_PASSWORD,
                 database=cfg.MYSQL_DATABASE_DB
             )
-            self.cursor = self.connection.cursor()
+            self.cursor = self.connection.cursor()  # Initialize cursor here
             self.create_db_table()
         except mysql.connector.Error as e:
             logging.error(f"Error connecting to the database: {e}")
