@@ -296,9 +296,9 @@
                     alert("Recipe added successfully");
                     window.location.href = "/";  // Redirect to main page
                 },
-                error: function (xhr, status, error) {
-                    console.error("Error adding recipe:", error);
-                    alert("Error adding recipe: " + error);
+                error: function(xhr, status, error) {
+                    console.error("Error: ", xhr, status, error);
+                    alert("Error: " + xhr.status + " - " + xhr.statusText);
                 }
             });
         }
@@ -323,10 +323,11 @@
                     loadRecipes();
                     clearForm();
                 },
-                error: function (xhr, status, error) {
-                    console.error("Error updating recipe:", error);
-                    alert("Error updating recipe: " + error);
+                error: function(xhr, status, error) {
+                    console.error("Error: ", xhr, status, error);
+                    alert("Error: " + xhr.status + " - " + xhr.statusText);
                 }
+                
             });
         }
 
@@ -342,8 +343,9 @@
                             alert('Recipe deleted successfully!');
                             loadRecipes();
                         },
-                        error: function (xhr, status, error) {
-                            console.error(error);
+                        error: function(xhr, status, error) {
+                            console.error("Error: ", xhr, status, error);
+                            alert("Error: " + xhr.status + " - " + xhr.statusText);
                         }
                     });
                 }
@@ -395,8 +397,9 @@
                                 tableBodyElement.appendChild(rowElement);
                             });
                         },
-                        error: function (xhr, status, error) {
-                            console.error(error);
+                        error: function(xhr, status, error) {
+                            console.error("Error: ", xhr, status, error);
+                            alert("Error: " + xhr.status + " - " + xhr.statusText);
                         }
                     });
                 }
@@ -459,8 +462,9 @@
                                     searchResultsContainer.appendChild(noResultsElement);
                                 }
                             },
-                            error: function (xhr, status, error) {
-                                console.error(error);
+                            error: function(xhr, status, error) {
+                                console.error("Error: ", xhr, status, error);
+                                alert("Error: " + xhr.status + " - " + xhr.statusText);
                             }
                         });
                     } catch (error) {
@@ -493,8 +497,9 @@
                                 alert("Recipe extracted and saved successfully");
                                 window.location.href = "/";  // Redirect to main page
                             },
-                            error: function (xhr, status, error) {
-                                console.error("Error: " + status + ", Message: " + error);
+                            error: function(xhr, status, error) {
+                                console.error("Error: ", xhr, status, error);
+                                alert("Error: " + xhr.status + " - " + xhr.statusText);
                             }
                         });
                     } else {
@@ -519,8 +524,9 @@
                         success: function () {
                             alert("Recipe saved successfully");
                         },
-                        error: function (xhr, status, error) {
-                            console.error("Error: " + status + ", Message: " + error);
+                        error: function(xhr, status, error) {
+                            console.error("Error: ", xhr, status, error);
+                            alert("Error: " + xhr.status + " - " + xhr.statusText);
                         }
                     });
                 }
