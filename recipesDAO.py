@@ -1,5 +1,6 @@
 import mysql.connector
 import requests
+import logging
 from config import config as cfg
 
 class RecipesDAO:
@@ -14,7 +15,7 @@ class RecipesDAO:
             self.cursor = self.connection.cursor()
             self.create_db_table()
         except mysql.connector.Error as e:
-            print(f"Error connecting to the database: {e}")
+            logging.error(f"Error connecting to the database: {e}")
 
     def create_db_table(self):
         try:
@@ -27,7 +28,7 @@ class RecipesDAO:
             self.cursor.execute(sql)
             self.connection.commit()
         except mysql.connector.Error as e:
-            print(f"Error creating table: {e}")
+            logging.error(f"Error creating table: {e}")
 
     def create(self, name, ingredients, instructions):
         try:
@@ -37,7 +38,7 @@ class RecipesDAO:
             self.connection.commit()
             return self.cursor.lastrowid
         except mysql.connector.Error as e:
-            print(f"Error creating recipe: {e}")
+            logging.error(f"Error creating recipe: {e}")
             self.connection.rollback()
             return None
 
@@ -48,7 +49,7 @@ class RecipesDAO:
             results = self.cursor.fetchall()
             return [self.convert_to_dictionary(result) for result in results]
         except mysql.connector.Error as e:
-            print(f"Error fetching recipes: {e}")
+            logging.error(f"Error fetching recipes: {e}")
             return []
 
     def find_by_id(self, id):
@@ -61,7 +62,7 @@ class RecipesDAO:
             else:
                 return None
         except mysql.connector.Error as e:
-            print(f"Error finding recipe: {e}")
+            logging.error(f"Error finding recipe: {e}")
             return None
 
     def update(self, id, name, ingredients, instructions):
@@ -72,7 +73,7 @@ class RecipesDAO:
             self.connection.commit()
             return True
         except mysql.connector.Error as e:
-            print(f"Error updating recipe: {e}")
+            logging.error(f"Error updating recipe: {e}")
             self.connection.rollback()
             return False
 
@@ -82,7 +83,7 @@ class RecipesDAO:
             self.cursor.execute(sql, (id,))
             self.connection.commit()
         except mysql.connector.Error as e:
-            print(f"Error deleting recipe: {e}")
+            logging.error(f"Error deleting recipe: {e}")
             self.connection.rollback()
 
     def convert_to_dictionary(self, result):
@@ -96,7 +97,7 @@ class RecipesDAO:
         if response.status_code == 200:
             return response.json()
         else:
-            print(f"Error: {response.status_code}")
+            logging.error(f"Error: {response.status_code}")
             return None
 
     def extract_recipe_details(self, api_response):
@@ -121,9 +122,9 @@ class RecipesDAO:
             recipes = self.extract_recipe_details(api_response)
             for recipe in recipes:
                 self.create(recipe['name'], recipe['ingredients'], recipe['instructions'])
-                print(f"Recipe {recipe['name']} added successfully!")
+                logging.info(f"Recipe {recipe['name']} added successfully!")
         else:
-            print("No recipes found.")
+            logging.error("No recipes found.")
 
     def __del__(self):
         if hasattr(self, 'cursor') and self.cursor:
