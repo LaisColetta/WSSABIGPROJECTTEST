@@ -2,9 +2,10 @@ import mysql.connector
 import requests
 import logging
 from config import config as cfg
+from recipesDAO import RecipesDAO
 
-class RecipesDAO:
-    def __init__(self): 
+
+def __init__(self): 
         try:
             self.connection = mysql.connector.connect(
                 host=cfg.MYSQL_DATABASE_HOST,
@@ -17,7 +18,7 @@ class RecipesDAO:
         except mysql.connector.Error as e:
             logging.error(f"Error connecting to the database: {e}")
 
-    def create_db_table(self):
+def create_db_table(self):
         try:
             sql = """CREATE TABLE IF NOT EXISTS recipes (
                         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -30,7 +31,7 @@ class RecipesDAO:
         except mysql.connector.Error as e:
             logging.error(f"Error creating table: {e}")
 
-    def create(self, name, ingredients, instructions):
+def create(self, name, ingredients, instructions):
         try:
             sql = "INSERT INTO recipes (name, ingredients, instructions) VALUES (%s, %s, %s)"
             values = (name, ingredients, instructions)
@@ -42,7 +43,7 @@ class RecipesDAO:
             self.connection.rollback()
             return None
 
-    def get_all(self):
+def get_all(self):
         try:
             sql = "SELECT * FROM recipes ORDER BY id"
             self.cursor.execute(sql)
@@ -52,7 +53,7 @@ class RecipesDAO:
             logging.error(f"Error fetching recipes: {e}")
             return []
 
-    def find_by_id(self, id):
+def find_by_id(self, id):
         try:
             sql = "SELECT * FROM recipes WHERE id = %s"
             self.cursor.execute(sql, (id,))
@@ -65,7 +66,7 @@ class RecipesDAO:
             logging.error(f"Error finding recipe: {e}")
             return None
 
-    def update(self, id, name, ingredients, instructions):
+def update(self, id, name, ingredients, instructions):
         try:
             sql = "UPDATE recipes SET name = %s, ingredients = %s, instructions = %s WHERE id = %s"
             values = (name, ingredients, instructions, id)
@@ -77,7 +78,7 @@ class RecipesDAO:
             self.connection.rollback()
             return False
 
-    def delete(self, id):
+def delete(self, id):
         try:
             sql = "DELETE FROM recipes WHERE id = %s"
             self.cursor.execute(sql, (id,))
@@ -86,11 +87,11 @@ class RecipesDAO:
             logging.error(f"Error deleting recipe: {e}")
             self.connection.rollback()
 
-    def convert_to_dictionary(self, result):
+def convert_to_dictionary(self, result):
         colnames = ['id', 'name', 'ingredients', 'instructions']
         return {colname: value for colname, value in zip(colnames, result)}
 
-    def search_recipes_online(self, query):
+def search_recipes_online(self, query):
         url = f'https://api.edamam.com/search?q={query}&app_id={cfg.API_ID}&app_key={cfg.API_KEY}'
 
         response = requests.get(url)
@@ -100,7 +101,7 @@ class RecipesDAO:
             logging.error(f"Error: {response.status_code}")
             return None
 
-    def extract_recipe_details(self, api_response):
+def extract_recipe_details(self, api_response):
         recipes = []
         for recipe_data in api_response.get('hits', []):
             recipe_info = recipe_data.get('recipe', {})
@@ -116,7 +117,7 @@ class RecipesDAO:
             })
         return recipes
 
-    def add_online_recipe(self, query):
+def add_online_recipe(self, query):
         api_response = self.search_recipes_online(query)
         if api_response:
             recipes = self.extract_recipe_details(api_response)
@@ -126,7 +127,7 @@ class RecipesDAO:
         else:
             logging.error("No recipes found.")
 
-    def __del__(self):
+def __del__(self):
         if hasattr(self, 'cursor') and self.cursor:
             self.cursor.close()
         if hasattr(self, 'connection') and self.connection:
