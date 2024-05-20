@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/laiscoletta/Desktop/WSSA-Big-Project/venv"
+VIRTUAL_ENV="/Users/laiscoletta/Desktop/WSSABIGPROJECTTEST/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
